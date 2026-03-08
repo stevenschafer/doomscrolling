@@ -11,6 +11,6 @@ export async function GET(req: NextRequest) {
     return Response.json({ articles, total, page });
   } catch (err) {
     console.error('Articles fetch error:', err);
-    return Response.json({ error: 'Failed to fetch articles' }, { status: 500 });
+    return Response.json({ articles: [], total: 0, page, error: String(err) });
   }
 }

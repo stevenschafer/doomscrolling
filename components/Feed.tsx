@@ -23,13 +23,14 @@ export function Feed() {
 
       const res = await fetch(`/api/articles?${params}`);
       const data = await res.json();
+      const fetched = data.articles ?? [];
 
       if (replace) {
-        setArticles(data.articles);
+        setArticles(fetched);
       } else {
-        setArticles((prev) => [...prev, ...data.articles]);
+        setArticles((prev) => [...prev, ...fetched]);
       }
-      setHasMore(data.articles.length === 20);
+      setHasMore(fetched.length === 20);
     } catch (err) {
       console.error('Fetch error:', err);
     } finally {
