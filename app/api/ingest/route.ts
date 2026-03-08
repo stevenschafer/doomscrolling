@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { runIngest } from '@/lib/ingest';
+import { inngest } from '@/inngest/client';
 
 export async function GET(req: NextRequest) {
   const secret = req.headers.get('authorization')?.replace('Bearer ', '')
@@ -10,12 +10,12 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const result = await runIngest();
-    return Response.json(result);
+    await inngest.send({ name: 'ingest/run', data: {} });
+    return Response.json({ ok: true, message: 'Ingest triggered' });
   } catch (err) {
-    console.error('Ingest failed:', err);
+    console.error('Failed to trigger ingest:', err);
     return Response.json(
-      { error: 'Ingest failed', message: String(err) },
+      { error: 'Failed to trigger ingest', message: String(err) },
       { status: 500 }
     );
   }

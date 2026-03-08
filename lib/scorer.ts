@@ -56,7 +56,7 @@ export interface ScoredStory extends RawStory {
   tags?: string[];
 }
 
-async function scoreStory(story: RawStory): Promise<ScoredStory> {
+export async function scoreStory(story: RawStory): Promise<ScoredStory> {
   const response = await getAnthropic().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 500,
