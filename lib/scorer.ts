@@ -1,7 +1,11 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { RawStory, db } from './db';
 
-const anthropic = new Anthropic();
+let _anthropic: Anthropic | null = null;
+function getAnthropic(): Anthropic {
+  if (!_anthropic) _anthropic = new Anthropic();
+  return _anthropic;
+}
 
 const SYSTEM_PROMPT = `You are the editorial filter for doomscrolling.ai — a news feed dedicated to surfacing real, concerning developments in AI. Your job is to evaluate whether a story belongs in the feed and how alarming it is.
 
@@ -53,7 +57,7 @@ export interface ScoredStory extends RawStory {
 }
 
 async function scoreStory(story: RawStory): Promise<ScoredStory> {
-  const response = await anthropic.messages.create({
+  const response = await getAnthropic().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 500,
     system: SYSTEM_PROMPT,
