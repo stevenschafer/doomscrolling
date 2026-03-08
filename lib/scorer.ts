@@ -64,7 +64,9 @@ export async function scoreStory(story: RawStory): Promise<ScoredStory> {
     messages: [{ role: 'user', content: buildUserPrompt(story) }],
   });
 
-  const text = response.content[0].type === 'text' ? response.content[0].text : '';
+  let text = response.content[0].type === 'text' ? response.content[0].text : '';
+  // Strip markdown code fences if present
+  text = text.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim();
   const result: ScoreResult = JSON.parse(text);
 
   if (!result.is_relevant) {

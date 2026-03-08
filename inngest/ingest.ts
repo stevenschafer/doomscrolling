@@ -61,13 +61,16 @@ export const ingestFunction = inngest.createFunction(
           return scored.filtered ? 'filtered' : 'approved';
         } catch (err) {
           console.error(`Failed to score "${story.title}":`, err);
-          return 'error';
+          return `error: ${err instanceof Error ? err.message : String(err)}`;
         }
       });
 
       if (result === 'approved') approved++;
       else if (result === 'filtered') filtered++;
-      else errors++;
+      else {
+        errors++;
+        console.error(`Score step result: ${result}`);
+      }
     }
 
     return {
