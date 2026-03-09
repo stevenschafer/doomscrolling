@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# doomscrolling.ai news aggregator
+# Images are hot-linked from og:image metadata only

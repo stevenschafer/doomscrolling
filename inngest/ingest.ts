@@ -3,6 +3,7 @@ import { db, RawStory } from '@/lib/db';
 import { fetchFromNewsAPI } from '@/lib/sources/newsapi';
 import { fetchFromRSS } from '@/lib/sources/rss';
 import { fetchFromAIID } from '@/lib/sources/aiid';
+import { fetchOgImage } from '@/lib/sources/og';
 import { scoreStory } from '@/lib/scorer';
 
 export const ingestFunction = inngest.createFunction(
@@ -48,13 +49,29 @@ export const ingestFunction = inngest.createFunction(
       return { fetched: allStories.length, scored: 0, approved: 0, filtered: 0, errors: 0 };
     }
 
+    // Step 2.5: Fetch OG images for stories missing image_url
+    const storiesWithImages = await step.run('fetch-og-images', async () => {
+      const results: RawStory[] = [];
+      for (const story of newStories) {
+        if (!story.image_url) {
+          try {
+            story.image_url = await fetchOgImage(story.url);
+          } catch {
+            // Skip silently — image fetching should never block ingestion
+          }
+        }
+        results.push(story);
+      }
+      return results;
+    });
+
     // Step 3: Score each story individually
     let approved = 0;
     let filtered = 0;
     let errors = 0;
 
-    for (let i = 0; i < newStories.length; i++) {
-      const story = newStories[i];
+    for (let i = 0; i < storiesWithImages.length; i++) {
+      const story = storiesWithImages[i];
       const result = await step.run(`score-${i}-${story.source_id.slice(0, 8)}`, async () => {
         try {
           const scored = await scoreStory(story);
@@ -75,7 +92,7 @@ export const ingestFunction = inngest.createFunction(
 
     return {
       fetched: allStories.length,
-      scored: newStories.length,
+      scored: storiesWithImages.length,
       approved,
       filtered,
       errors,

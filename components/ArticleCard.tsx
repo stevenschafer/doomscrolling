@@ -17,14 +17,24 @@ export function ArticleCard({ article }: { article: Article }) {
 
   return (
     <article className="border-b border-border pb-6 mb-6">
-      {article.image_url && !imgError && (
-        <img
-          src={article.image_url}
-          alt=""
-          className="w-full aspect-video object-cover mb-4"
-          loading="lazy"
-          onError={() => setImgError(true)}
-        />
+      {article.image_url && !imgError ? (
+        <a
+          href={article.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => trackClick(article.id)}
+        >
+          <img
+            src={article.image_url}
+            alt=""
+            className="w-full aspect-video object-cover mb-4 bg-border"
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            onError={() => setImgError(true)}
+          />
+        </a>
+      ) : (
+        <div className="w-full aspect-video bg-border mb-4" aria-hidden="true" />
       )}
       <div>
         <div className="flex items-center justify-between mb-2">
