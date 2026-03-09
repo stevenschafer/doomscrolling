@@ -12,8 +12,16 @@ function trackClick(id: string) {
   }
 }
 
+const severityColor: Record<string, string> = {
+  low: 'text-severity-low border-severity-low',
+  medium: 'text-severity-medium border-severity-medium',
+  high: 'text-severity-high border-severity-high',
+  critical: 'text-severity-critical border-severity-critical',
+};
+
 export function ArticleCard({ article }: { article: Article }) {
   const [imgError, setImgError] = useState(false);
+  const scoreClasses = severityColor[article.severity] ?? 'text-fg border-fg';
 
   return (
     <article className="border-b border-border pb-6 mb-6">
@@ -42,8 +50,8 @@ export function ArticleCard({ article }: { article: Article }) {
             {article.category}
           </span>
           <span
-            className="text-xs font-mono font-bold px-2 py-0.5 border border-fg text-fg"
-            title="Concern level"
+            className={`text-xs font-mono font-bold px-2 py-0.5 border ${scoreClasses}`}
+            title={`Concern level — ${article.severity}`}
           >
             {article.concern_score}
           </span>
