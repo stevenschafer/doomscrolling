@@ -24,8 +24,8 @@ export function ArticleCard({ article }: { article: Article }) {
   const { color: scoreStyle } = scoreColor(article.concern_score);
 
   return (
-    <article className="border-b border-border pb-6 mb-6">
-      {article.image_url && !imgError ? (
+    <article className="border-b border-border pb-6 mb-6 pt-2">
+      {article.image_url && !imgError && (
         <a
           href={article.url}
           target="_blank"
@@ -41,8 +41,6 @@ export function ArticleCard({ article }: { article: Article }) {
             onError={() => setImgError(true)}
           />
         </a>
-      ) : (
-        <div className="w-full aspect-video bg-border mb-4" aria-hidden="true" />
       )}
       <div>
         <div className="flex items-center justify-between mb-2">
