@@ -6,10 +6,6 @@
   --border: #e5e5e5;
   --muted: #6b6b6b;
   --card-bg: #ffffff;
-  --severity-low: #22863a;
-  --severity-medium: #b08800;
-  --severity-high: #d15704;
-  --severity-critical: #cb2431;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,10 +15,6 @@
     --border: #1f1f1f;
     --muted: #888888;
     --card-bg: #111111;
-    --severity-low: #3fb950;
-    --severity-medium: #d29922;
-    --severity-high: #f0883e;
-    --severity-critical: #f85149;
   }
 }
 
@@ -32,10 +24,6 @@
   --color-border: var(--border);
   --color-muted: var(--muted);
   --color-card-bg: var(--card-bg);
-  --color-severity-low: var(--severity-low);
-  --color-severity-medium: var(--severity-medium);
-  --color-severity-high: var(--severity-high);
-  --color-severity-critical: var(--severity-critical);
 }
 
 body {

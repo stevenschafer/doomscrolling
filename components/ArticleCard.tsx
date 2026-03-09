@@ -12,16 +12,16 @@ function trackClick(id: string) {
   }
 }
 
-function scoreColor(score: number): string {
-  if (score >= 80) return 'text-severity-critical border-severity-critical';
-  if (score >= 65) return 'text-severity-high border-severity-high';
-  if (score >= 50) return 'text-severity-medium border-severity-medium';
-  return 'text-severity-low border-severity-low';
+function scoreColor(score: number): { color: string } {
+  // Map 40–100 to hue 50 (yellow) → 0 (red)
+  const t = Math.max(0, Math.min(1, (score - 40) / 60));
+  const hue = 50 * (1 - t);
+  return { color: `hsl(${hue}, 90%, 45%)` };
 }
 
 export function ArticleCard({ article }: { article: Article }) {
   const [imgError, setImgError] = useState(false);
-  const scoreClasses = scoreColor(article.concern_score);
+  const { color: scoreStyle } = scoreColor(article.concern_score);
 
   return (
     <article className="border-b border-border pb-6 mb-6">
@@ -50,7 +50,8 @@ export function ArticleCard({ article }: { article: Article }) {
             {article.category}
           </span>
           <span
-            className={`text-xs font-mono font-bold px-2 py-0.5 border ${scoreClasses}`}
+            className="text-xs font-mono font-bold px-2 py-0.5 border"
+            style={{ color: scoreStyle, borderColor: scoreStyle }}
             title={`Concern level — ${article.severity}`}
           >
             {article.concern_score}

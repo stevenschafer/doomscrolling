@@ -175,7 +175,7 @@ export function FilteredTable({ articles, secret }: { articles: FilteredArticle[
             </td>
             <td className="py-2">
               {approved.has(a.id) ? (
-                <span className="text-xs text-severity-low">Approved</span>
+                <span className="text-xs text-green-600 dark:text-green-400">Approved</span>
               ) : (
                 <button
                   onClick={() => handleApprove(a)}
