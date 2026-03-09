@@ -3,6 +3,7 @@ import { db, RawStory } from '@/lib/db';
 import { fetchFromNewsAPI } from '@/lib/sources/newsapi';
 import { fetchFromRSS } from '@/lib/sources/rss';
 import { fetchFromAIID } from '@/lib/sources/aiid';
+import { fetchFromHackerNews } from '@/lib/sources/hackernews';
 import { fetchOgImage } from '@/lib/sources/og';
 import { scoreStory } from '@/lib/scorer';
 
@@ -15,13 +16,14 @@ export const ingestFunction = inngest.createFunction(
   async ({ step }) => {
     // Step 1: Fetch from all sources
     const allStories = await step.run('fetch-sources', async () => {
-      const [newsapiStories, rssStories, aiidStories] = await Promise.all([
+      const [newsapiStories, rssStories, aiidStories, hnStories] = await Promise.all([
         fetchFromNewsAPI(),
         fetchFromRSS(),
         fetchFromAIID(),
+        fetchFromHackerNews(),
       ]);
 
-      const combined = [...newsapiStories, ...rssStories, ...aiidStories];
+      const combined = [...newsapiStories, ...rssStories, ...aiidStories, ...hnStories];
       console.log(`Fetched ${combined.length} total stories`);
 
       // Deduplicate by source_id
