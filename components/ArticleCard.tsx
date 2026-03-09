@@ -12,16 +12,16 @@ function trackClick(id: string) {
   }
 }
 
-const severityColor: Record<string, string> = {
-  low: 'text-severity-low border-severity-low',
-  medium: 'text-severity-medium border-severity-medium',
-  high: 'text-severity-high border-severity-high',
-  critical: 'text-severity-critical border-severity-critical',
-};
+function scoreColor(score: number): string {
+  if (score >= 80) return 'text-severity-critical border-severity-critical';
+  if (score >= 65) return 'text-severity-high border-severity-high';
+  if (score >= 50) return 'text-severity-medium border-severity-medium';
+  return 'text-severity-low border-severity-low';
+}
 
 export function ArticleCard({ article }: { article: Article }) {
   const [imgError, setImgError] = useState(false);
-  const scoreClasses = severityColor[article.severity] ?? 'text-fg border-fg';
+  const scoreClasses = scoreColor(article.concern_score);
 
   return (
     <article className="border-b border-border pb-6 mb-6">

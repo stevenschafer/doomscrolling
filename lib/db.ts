@@ -117,7 +117,7 @@ export const db = {
     let query = getSupabaseAdmin()
       .from('articles')
       .select('*', { count: 'exact' })
-      .gte('concern_score', 50);
+      .gte('concern_score', 30);
 
     if (category && category !== 'all') {
       query = query.eq('category', category);
