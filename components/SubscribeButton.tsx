@@ -34,7 +34,7 @@ export function SubscribeButton() {
         onClick={() => setOpen(true)}
         className="text-xs font-bold tracking-widest uppercase px-3 py-1 border border-fg text-fg hover:bg-fg hover:text-bg transition-colors"
       >
-        Subscribe
+        Premium
       </button>
     );
   }

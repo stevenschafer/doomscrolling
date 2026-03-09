@@ -100,7 +100,7 @@ export function Feed() {
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value)}
-          className="text-xs font-bold tracking-widest uppercase px-3 py-1 border border-border bg-transparent text-fg cursor-pointer transition-colors hover:border-fg focus:border-fg focus:outline-none"
+          className="text-xs font-bold tracking-widest uppercase px-3 py-1 pr-8 border border-border bg-transparent text-fg cursor-pointer transition-colors hover:border-fg focus:border-fg focus:outline-none appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23888%22%20d%3D%22M6%208L1%203h10z%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_0.75rem_center]"
         >
           {SORT_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -129,7 +129,7 @@ export function Feed() {
 
       {!loading && articles.length === 0 && (
         <div className="text-center py-16 text-muted text-sm">
-          No articles yet. Run the ingest pipeline to populate the feed.
+          No articles yet.
         </div>
       )}
 
