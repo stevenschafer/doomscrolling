@@ -9,8 +9,7 @@ const CATEGORIES = ['all', 'safety', 'labor', 'ethics', 'power', 'misinformation
 
 const SORT_OPTIONS = [
   { value: 'latest', label: 'Latest' },
-  { value: 'score_high', label: 'Score ↑' },
-  { value: 'score_low', label: 'Score ↓' },
+  { value: 'score_high', label: 'Score (High to Low)' },
   { value: 'most_clicked', label: 'Most Clicked' },
   { value: 'severity', label: 'Severity' },
 ] as const;
@@ -95,22 +94,20 @@ export function Feed() {
         ))}
       </div>
 
-      {/* Sort options */}
+      {/* Sort dropdown */}
       <div className="flex items-center gap-2 mb-8">
         <span className="text-xs text-muted uppercase tracking-widest font-bold">Sort</span>
-        {SORT_OPTIONS.map((opt) => (
-          <button
-            key={opt.value}
-            onClick={() => setSort(opt.value)}
-            className={`text-xs font-bold tracking-widest uppercase px-3 py-1 border transition-colors ${
-              sort === opt.value
-                ? 'bg-fg text-bg border-fg'
-                : 'bg-transparent text-muted border-border hover:text-fg hover:border-fg'
-            }`}
-          >
-            {opt.label}
-          </button>
-        ))}
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+          className="text-xs font-bold tracking-widest uppercase px-3 py-1 border border-border bg-transparent text-fg cursor-pointer transition-colors hover:border-fg focus:border-fg focus:outline-none"
+        >
+          {SORT_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Articles */}

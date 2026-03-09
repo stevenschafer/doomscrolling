@@ -127,9 +127,6 @@ export const db = {
       case 'score_high':
         query = query.order('concern_score', { ascending: false });
         break;
-      case 'score_low':
-        query = query.order('concern_score', { ascending: true });
-        break;
       case 'most_clicked':
         query = query.order('click_count', { ascending: false });
         break;
