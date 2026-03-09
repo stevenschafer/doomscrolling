@@ -31,7 +31,7 @@ Return a JSON object:
 {
   "is_relevant": boolean,
   "filter_reason": string | null,
-  "concern_score": number,
+  "concern_score": number (0-100 scale, always use this range even for irrelevant articles),
   "category": "safety" | "labor" | "ethics" | "power" | "misinformation" | "surveillance" | "uncanny",
   "severity": "low" | "medium" | "high" | "critical",
   "ai_summary": string,

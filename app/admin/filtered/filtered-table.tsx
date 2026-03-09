@@ -92,7 +92,7 @@ export function FilteredTable({ articles, secret }: { articles: FilteredArticle[
         },
         body: JSON.stringify({
           id: article.id,
-          concern_score: claude?.concern_score ?? article.raw_score ?? 40,
+          concern_score: Math.max(Number(claude?.concern_score ?? article.raw_score ?? 40), 40),
           category: claude?.category ?? 'uncanny',
           severity: claude?.severity ?? 'low',
           ai_summary: claude?.ai_summary ?? 'Manually approved from filtered articles.',
