@@ -83,7 +83,7 @@ export function Feed() {
           <button
             key={cat}
             onClick={() => setCategory(cat)}
-            className={`text-xs font-bold tracking-widest uppercase px-3 py-1 border transition-colors ${
+            className={`text-xs font-bold tracking-[1.2px] uppercase font-mono px-3 py-1 border rounded transition-colors ${
               category === cat
                 ? 'bg-fg text-bg border-fg'
                 : 'bg-transparent text-muted border-border hover:text-fg hover:border-fg'
@@ -100,7 +100,7 @@ export function Feed() {
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value)}
-          className="text-xs font-bold tracking-widest uppercase px-3 py-1 pr-8 border border-border bg-transparent text-fg cursor-pointer transition-colors hover:border-fg focus:border-fg focus:outline-none appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23888%22%20d%3D%22M6%208L1%203h10z%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_0.75rem_center]"
+          className="text-xs font-bold tracking-[1.2px] uppercase font-mono px-3 py-1 pr-8 border border-border rounded bg-transparent text-fg cursor-pointer transition-colors hover:border-fg focus:border-fg focus:outline-none appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23888%22%20d%3D%22M6%208L1%203h10z%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_0.75rem_center]"
         >
           {SORT_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -111,17 +111,19 @@ export function Feed() {
       </div>
 
       {/* Articles */}
-      {articles.map((article, i) => (
-        <div key={article.id}>
-          <ArticleCard article={article} />
-          {/* In-feed ad every 10 articles (mobile) */}
-          {(i + 1) % 10 === 0 && (
-            <div className="my-6 xl:hidden">
-              <AdSlot slot="in-feed-mobile" />
-            </div>
-          )}
-        </div>
-      ))}
+      <div className="flex flex-col gap-4">
+        {articles.map((article, i) => (
+          <div key={article.id}>
+            <ArticleCard article={article} />
+            {/* In-feed ad every 10 articles (mobile) */}
+            {(i + 1) % 10 === 0 && (
+              <div className="mt-4 xl:hidden">
+                <AdSlot slot="in-feed-mobile" />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
 
       {loading && (
         <div className="text-center py-8 text-muted text-sm">Loading...</div>

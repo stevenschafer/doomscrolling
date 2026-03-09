@@ -12,19 +12,18 @@ function trackClick(id: string) {
   }
 }
 
-function scoreColor(score: number): { color: string } {
-  // Map 40–100 to hue 50 (yellow) → 0 (red)
+function scoreColor(score: number): string {
   const t = Math.max(0, Math.min(1, (score - 40) / 60));
   const hue = 50 * (1 - t);
-  return { color: `hsl(${hue}, 90%, 45%)` };
+  return `hsl(${hue}, 90%, 45%)`;
 }
 
 export function ArticleCard({ article }: { article: Article }) {
   const [imgError, setImgError] = useState(false);
-  const { color: scoreStyle } = scoreColor(article.concern_score);
+  const bgColor = scoreColor(article.concern_score);
 
   return (
-    <article className="border-b border-border pb-6 mb-6 pt-2">
+    <article className="bg-card-bg rounded-[20px] pt-4 pb-4 px-4 flex flex-col gap-4">
       {article.image_url && !imgError && (
         <a
           href={article.url}
@@ -35,27 +34,33 @@ export function ArticleCard({ article }: { article: Article }) {
           <img
             src={article.image_url}
             alt=""
-            className="w-full aspect-video object-cover mb-4 bg-border"
+            className="w-full aspect-video object-cover rounded-lg bg-border"
             loading="lazy"
             referrerPolicy="no-referrer"
             onError={() => setImgError(true)}
           />
         </a>
       )}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-bold tracking-widest uppercase text-muted">
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold tracking-[1.2px] uppercase text-muted font-mono">
             {article.category}
           </span>
-          <span
-            className="text-xs font-mono font-bold px-2 py-0.5 border"
-            style={{ color: scoreStyle, borderColor: scoreStyle }}
-            title={`Concern level — ${article.severity}`}
-          >
-            {article.concern_score}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted font-mono border border-border rounded px-2 py-1 flex items-center gap-1">
+              <span>💀</span>
+              <span>{article.click_count}</span>
+            </span>
+            <span
+              className="text-xs font-mono font-bold text-white rounded px-2 py-1"
+              style={{ backgroundColor: bgColor }}
+              title={`Concern level — ${article.severity}`}
+            >
+              {article.concern_score}
+            </span>
+          </div>
         </div>
-        <h2 className="text-xl font-bold leading-tight mb-2">
+        <h2 className="text-xl font-bold leading-[25px]">
           <a
             href={article.url}
             target="_blank"
@@ -66,15 +71,13 @@ export function ArticleCard({ article }: { article: Article }) {
             {article.title}
           </a>
         </h2>
-        <p className="text-sm text-muted leading-relaxed mb-3">
+        <p className="text-sm text-muted leading-[20px] tracking-[-0.1px]">
           {article.ai_summary}
         </p>
         <footer className="text-xs text-muted flex items-center gap-2">
           <span>{article.source_name}</span>
           <span>·</span>
           <span>{formatDistanceToNow(new Date(article.published_at), { addSuffix: true })}</span>
-          <span>·</span>
-          <span>{article.click_count} clicks</span>
         </footer>
       </div>
     </article>

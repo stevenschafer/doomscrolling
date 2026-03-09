@@ -6,9 +6,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-bg text-fg">
       {/* Header */}
-      <header className="border-b border-border sticky top-0 z-50 bg-bg">
+      <header className="border-b border-border sticky top-0 z-50 bg-card-bg">
         <div className="max-w-[1200px] mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-lg font-bold tracking-tight"><a href="/" className="no-underline hover:no-underline">doomscrolling.ai</a></h1>
+          <h1 className="text-lg font-bold tracking-tight"><a href="/" className="no-underline hover:no-underline">💀 doomscrolling.ai</a></h1>
           <SubscribeButton />
         </div>
       </header>

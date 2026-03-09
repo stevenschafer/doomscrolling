@@ -32,7 +32,7 @@ export function SubscribeButton() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="text-xs font-bold tracking-widest uppercase px-3 py-1 border border-fg text-fg hover:bg-fg hover:text-bg transition-colors"
+        className="text-xs font-bold tracking-[1.2px] uppercase font-mono px-3 py-1 border rounded border-fg text-fg hover:bg-fg hover:text-bg transition-colors"
       >
         Premium
       </button>
@@ -52,7 +52,7 @@ export function SubscribeButton() {
       <button
         type="submit"
         disabled={loading}
-        className="text-xs font-bold tracking-widest uppercase px-3 py-1 border border-fg text-fg hover:bg-fg hover:text-bg transition-colors disabled:opacity-50"
+        className="text-xs font-bold tracking-[1.2px] uppercase font-mono px-3 py-1 border border-fg text-fg hover:bg-fg hover:text-bg transition-colors disabled:opacity-50"
       >
         {loading ? '...' : 'Go'}
       </button>
