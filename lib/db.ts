@@ -89,6 +89,29 @@ export const db = {
     if (error) throw error;
   },
 
+  async updateArticleScoring(id: string, data: {
+    concern_score: number;
+    category: string;
+    severity: string;
+    ai_summary: string;
+    tags: string[];
+  }) {
+    const { error } = await getSupabaseAdmin()
+      .from('articles')
+      .update(data)
+      .eq('id', id);
+    if (error) throw error;
+  },
+
+  async getArticlesNeedingRescore() {
+    const { data, error } = await getSupabaseAdmin()
+      .from('articles')
+      .select('*')
+      .or('concern_score.lt.30,ai_summary.eq.Manually approved from filtered articles.');
+    if (error) throw error;
+    return data as Article[];
+  },
+
   async insertFiltered(filtered: {
     source_id: string;
     title: string;

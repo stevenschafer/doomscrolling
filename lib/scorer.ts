@@ -102,6 +102,33 @@ export async function scoreStory(story: RawStory): Promise<ScoredStory> {
   return { ...story, filtered: false, ...result };
 }
 
+export async function rescoreArticle(article: {
+  title: string;
+  source_name: string;
+  published_at: string;
+  url: string;
+}): Promise<ScoreResult> {
+  const story: RawStory = {
+    source_id: '',
+    title: article.title,
+    url: article.url,
+    source_name: article.source_name,
+    published_at: article.published_at,
+    excerpt: null,
+  };
+
+  const response = await getAnthropic().messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 500,
+    system: SYSTEM_PROMPT + `\n\nThis article has already been editorially approved for inclusion. Your job is ONLY to generate a proper concern_score (0-100), category, severity, ai_summary, and tags. Always set is_relevant to true.`,
+    messages: [{ role: 'user', content: buildUserPrompt(story) }],
+  });
+
+  let text = response.content[0].type === 'text' ? response.content[0].text : '';
+  text = text.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim();
+  return JSON.parse(text);
+}
+
 export async function scoreStories(stories: RawStory[]): Promise<{
   scored: number;
   approved: number;
