@@ -74,9 +74,40 @@ function Caret({ direction }: { direction: SortDirection }) {
   );
 }
 
-export function FilteredTable({ articles }: { articles: FilteredArticle[] }) {
+export function FilteredTable({ articles, secret }: { articles: FilteredArticle[]; secret: string }) {
   const [sortColumn, setSortColumn] = useState<SortColumn | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [approving, setApproving] = useState<string | null>(null);
+  const [approved, setApproved] = useState<Set<string>>(new Set());
+
+  async function handleApprove(article: FilteredArticle) {
+    setApproving(article.id);
+    try {
+      const claude = article.claude_response;
+      const res = await fetch('/api/admin/approve', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-secret': secret,
+        },
+        body: JSON.stringify({
+          id: article.id,
+          concern_score: claude?.concern_score ?? article.raw_score ?? 40,
+          category: claude?.category ?? 'uncanny',
+          severity: claude?.severity ?? 'low',
+          ai_summary: claude?.ai_summary ?? 'Manually approved from filtered articles.',
+          tags: claude?.tags ?? [],
+        }),
+      });
+      if (res.ok) {
+        setApproved((prev) => new Set(prev).add(article.id));
+      }
+    } catch (err) {
+      console.error('Approve failed:', err);
+    } finally {
+      setApproving(null);
+    }
+  }
 
   function handleSort(column: SortColumn) {
     if (sortColumn === column) {
@@ -118,7 +149,8 @@ export function FilteredTable({ articles }: { articles: FilteredArticle[] }) {
           >
             Score{sortColumn === 'score' && <Caret direction={sortDirection} />}
           </th>
-          <th className="py-2">Link</th>
+          <th className="py-2 pr-4">Link</th>
+          <th className="py-2"></th>
         </tr>
       </thead>
       <tbody>
@@ -131,7 +163,7 @@ export function FilteredTable({ articles }: { articles: FilteredArticle[] }) {
             </td>
             <td className="py-2 pr-4 text-muted max-w-[300px]">{a.filter_reason}</td>
             <td className="py-2 pr-4 font-mono">{a.raw_score ?? '—'}</td>
-            <td className="py-2">
+            <td className="py-2 pr-4">
               <a
                 href={a.url}
                 target="_blank"
@@ -140,6 +172,19 @@ export function FilteredTable({ articles }: { articles: FilteredArticle[] }) {
               >
                 View
               </a>
+            </td>
+            <td className="py-2">
+              {approved.has(a.id) ? (
+                <span className="text-xs text-severity-low">Approved</span>
+              ) : (
+                <button
+                  onClick={() => handleApprove(a)}
+                  disabled={approving === a.id}
+                  className="text-xs px-2 py-1 border border-border hover:border-fg cursor-pointer disabled:opacity-50"
+                >
+                  {approving === a.id ? 'Approving…' : 'Approve'}
+                </button>
+              )}
             </td>
           </tr>
         ))}

@@ -19,7 +19,7 @@ export default async function FilteredPage({
   return (
     <div className="min-h-screen bg-bg text-fg p-8">
       <h1 className="text-xl font-bold mb-4">Filtered Articles ({total} total)</h1>
-      <FilteredTable articles={articles} />
+      <FilteredTable articles={articles} secret={params.secret!} />
 
       {/* Simple pagination */}
       <div className="flex gap-4 mt-6 text-sm">
