@@ -107,22 +107,52 @@ export const db = {
     page = 1,
     limit = 20,
     category,
+    sort = 'latest',
   }: {
     page?: number;
     limit?: number;
     category?: string;
+    sort?: string;
   }) {
     let query = getSupabaseAdmin()
       .from('articles')
       .select('*', { count: 'exact' })
-      .gte('concern_score', 50)
-      .order('concern_score', { ascending: false })
-      .order('ingested_at', { ascending: false })
-      .range((page - 1) * limit, page * limit - 1);
+      .gte('concern_score', 50);
 
     if (category && category !== 'all') {
       query = query.eq('category', category);
     }
+
+    switch (sort) {
+      case 'score_high':
+        query = query.order('concern_score', { ascending: false });
+        break;
+      case 'score_low':
+        query = query.order('concern_score', { ascending: true });
+        break;
+      case 'most_clicked':
+        query = query.order('click_count', { ascending: false });
+        break;
+      case 'severity':
+        // Order by severity using a custom approach — critical > high > medium > low
+        // Supabase doesn't support custom enum ordering, so we sort by concern_score as proxy
+        // and add severity as a hint (critical items tend to have higher scores)
+        query = query
+          .order('severity', { ascending: true })
+          .order('concern_score', { ascending: false });
+        break;
+      case 'latest':
+      default:
+        query = query.order('published_at', { ascending: false });
+        break;
+    }
+
+    // Secondary sort for stability
+    if (sort !== 'latest') {
+      query = query.order('published_at', { ascending: false });
+    }
+
+    query = query.range((page - 1) * limit, page * limit - 1);
 
     const { data, count, error } = await query;
     if (error) throw error;

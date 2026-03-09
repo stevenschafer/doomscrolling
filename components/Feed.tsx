@@ -7,19 +7,29 @@ import { AdSlot } from './AdSlot';
 
 const CATEGORIES = ['all', 'safety', 'labor', 'ethics', 'power', 'misinformation', 'surveillance'];
 
+const SORT_OPTIONS = [
+  { value: 'latest', label: 'Latest' },
+  { value: 'score_high', label: 'Score ↑' },
+  { value: 'score_low', label: 'Score ↓' },
+  { value: 'most_clicked', label: 'Most Clicked' },
+  { value: 'severity', label: 'Severity' },
+] as const;
+
 export function Feed() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [page, setPage] = useState(1);
   const [category, setCategory] = useState('all');
+  const [sort, setSort] = useState('latest');
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const fetchArticles = useCallback(async (pageNum: number, cat: string, replace = false) => {
+  const fetchArticles = useCallback(async (pageNum: number, cat: string, sortBy: string, replace = false) => {
     setLoading(true);
     try {
       const params = new URLSearchParams({ page: String(pageNum) });
       if (cat !== 'all') params.set('category', cat);
+      if (sortBy !== 'latest') params.set('sort', sortBy);
 
       const res = await fetch(`/api/articles?${params}`);
       const data = await res.json();
@@ -38,12 +48,12 @@ export function Feed() {
     }
   }, []);
 
-  // Initial load and category change
+  // Initial load and category/sort change
   useEffect(() => {
     setPage(1);
     setHasMore(true);
-    fetchArticles(1, category, true);
-  }, [category, fetchArticles]);
+    fetchArticles(1, category, sort, true);
+  }, [category, sort, fetchArticles]);
 
   // Infinite scroll
   useEffect(() => {
@@ -54,7 +64,7 @@ export function Feed() {
         if (entries[0].isIntersecting && !loading && hasMore) {
           setPage((prev) => {
             const next = prev + 1;
-            fetchArticles(next, category);
+            fetchArticles(next, category, sort);
             return next;
           });
         }
@@ -64,12 +74,12 @@ export function Feed() {
 
     observer.observe(sentinelRef.current);
     return () => observer.disconnect();
-  }, [loading, hasMore, category, fetchArticles]);
+  }, [loading, hasMore, category, sort, fetchArticles]);
 
   return (
     <div>
       {/* Category filters */}
-      <div className="flex flex-wrap gap-2 mb-8 border-b border-border pb-4">
+      <div className="flex flex-wrap gap-2 mb-4 border-b border-border pb-4">
         {CATEGORIES.map((cat) => (
           <button
             key={cat}
@@ -81,6 +91,24 @@ export function Feed() {
             }`}
           >
             {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* Sort options */}
+      <div className="flex items-center gap-2 mb-8">
+        <span className="text-xs text-muted uppercase tracking-widest font-bold">Sort</span>
+        {SORT_OPTIONS.map((opt) => (
+          <button
+            key={opt.value}
+            onClick={() => setSort(opt.value)}
+            className={`text-xs font-bold tracking-widest uppercase px-3 py-1 border transition-colors ${
+              sort === opt.value
+                ? 'bg-fg text-bg border-fg'
+                : 'bg-transparent text-muted border-border hover:text-fg hover:border-fg'
+            }`}
+          >
+            {opt.label}
           </button>
         ))}
       </div>
