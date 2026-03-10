@@ -48,10 +48,6 @@ const faqs = [
     q: 'Do you store my payment info?',
     a: 'No. Payments are handled entirely by Stripe. We never see your card number.',
   },
-  {
-    q: "What if the podcast or Doom Index isn't built yet?",
-    a: "Fair question. The daily digest and ad-free experience are live on day one. The podcast and Doom Index are in active development — early subscribers get them the moment they launch, and the price won't increase.",
-  },
 ];
 
 // Fake Doom Index data for the teaser chart
@@ -74,6 +70,7 @@ export default function PremiumPage() {
 
         {/* Hero */}
         <section className="py-20 md:py-28 text-center">
+          <div className="text-3xl md:text-5xl mb-4">💀</div>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight mb-6">
             The feed. Plus everything the feed doesn&rsquo;t tell you.
           </h2>
@@ -179,31 +176,6 @@ export default function PremiumPage() {
           </div>
         </section>
 
-        {/* Podcast Sample */}
-        <section className="py-16 border-t border-border">
-          <h3 className="text-2xl md:text-3xl font-bold tracking-tight mb-3">
-            What it sounds like.
-          </h3>
-          <p className="text-muted leading-relaxed mb-6">
-            Every Sunday, two AI hosts break down the week in AI risk. First episode coming soon — subscribe to get it the moment it drops.
-          </p>
-          <div className="border border-border rounded-lg p-8 bg-card-bg flex flex-col items-center gap-4 text-center">
-            {/* Static waveform representation */}
-            <div className="flex items-end gap-[3px] h-12">
-              {[3,5,8,4,7,10,6,9,5,8,11,7,4,9,6,10,5,8,3,7,9,4,6,8,5,10,7,3,6,9,5,8,4,7,10,6].map((h, i) => (
-                <div
-                  key={i}
-                  className="w-[4px] bg-fg/30 rounded-full"
-                  style={{ height: `${h * 4}px` }}
-                />
-              ))}
-            </div>
-            <p className="text-sm text-muted">
-              First episode drops soon. Subscribe to get it.
-            </p>
-          </div>
-        </section>
-
         {/* Comparison Table */}
         <section className="py-16 border-t border-border">
           <h3 className="text-2xl md:text-3xl font-bold tracking-tight mb-8">
@@ -271,9 +243,7 @@ export default function PremiumPage() {
         </section>
 
         {/* Footer spacer */}
-        <div className="py-16 text-center text-xs text-muted">
-          AI wrote the summaries. AI hosts the podcast. Humans are optional.
-        </div>
+        <div className="py-16" />
       </div>
     </div>
   );
