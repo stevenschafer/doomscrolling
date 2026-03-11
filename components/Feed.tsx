@@ -14,7 +14,7 @@ const SORT_OPTIONS = [
   { value: 'severity', label: 'Severity' },
 ] as const;
 
-export function Feed() {
+export function Feed({ isPremium = false }: { isPremium?: boolean }) {
   const [articles, setArticles] = useState<Article[]>([]);
   const [page, setPage] = useState(1);
   const [category, setCategory] = useState('all');
@@ -115,8 +115,8 @@ export function Feed() {
         {articles.map((article, i) => (
           <div key={article.id}>
             <ArticleCard article={article} />
-            {/* In-feed ad every 10 articles (mobile) */}
-            {(i + 1) % 10 === 0 && (
+            {/* In-feed ad every 10 articles (mobile, non-premium only) */}
+            {!isPremium && (i + 1) % 10 === 0 && (
               <div className="mt-4 xl:hidden">
                 <AdSlot slot="in-feed-mobile" />
               </div>

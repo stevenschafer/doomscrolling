@@ -1,4 +1,6 @@
 import { PremiumCheckout } from '@/components/PremiumCheckout';
+import { AuthButton } from '@/components/AuthButton';
+import { getSupabaseAdmin } from '@/lib/db';
 
 export const metadata = {
   title: 'Premium — doomscrolling.ai',
@@ -50,11 +52,28 @@ const faqs = [
   },
 ];
 
-// Fake Doom Index data for the teaser chart
-const doomIndexData = [62, 58, 65, 71, 68, 74, 79, 83];
-const doomIndexWeeks = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8'];
+// Fallback data if no real Doom Index data exists
+const fallbackDoomData = [62, 58, 65, 71, 68, 74, 79, 83];
+const fallbackWeeks = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8'];
 
-export default function PremiumPage() {
+export default async function PremiumPage() {
+  // Fetch real Doom Index data
+  const { data: doomData } = await getSupabaseAdmin()
+    .from('doom_index')
+    .select('week_start, overall_score')
+    .order('week_start', { ascending: true })
+    .limit(8);
+
+  const hasRealData = doomData && doomData.length > 0;
+  const chartScores = hasRealData
+    ? doomData.map((d: { overall_score: number }) => d.overall_score)
+    : fallbackDoomData;
+  const chartLabels = hasRealData
+    ? doomData.map((d: { week_start: string }) =>
+        new Date(d.week_start).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      )
+    : fallbackWeeks;
+
   return (
     <div className="min-h-screen bg-bg text-fg">
       {/* Header */}
@@ -63,6 +82,7 @@ export default function PremiumPage() {
           <h1 className="text-lg font-bold tracking-tight">
             <a href="/" className="no-underline hover:no-underline">💀 doomscrolling.ai</a>
           </h1>
+          <AuthButton />
         </div>
       </header>
 
@@ -118,15 +138,15 @@ export default function PremiumPage() {
                 fill="none"
                 stroke="var(--fg)"
                 strokeWidth="2"
-                points={doomIndexData.map((val, i) => {
-                  const x = 80 + i * 80;
+                points={chartScores.map((val: number, i: number) => {
+                  const x = 80 + i * (560 / Math.max(chartScores.length - 1, 1));
                   const y = 180 - (val / 100) * 160;
                   return `${x},${y}`;
                 }).join(' ')}
               />
               {/* Data points */}
-              {doomIndexData.map((val, i) => {
-                const x = 80 + i * 80;
+              {chartScores.map((val: number, i: number) => {
+                const x = 80 + i * (560 / Math.max(chartScores.length - 1, 1));
                 const y = 180 - (val / 100) * 160;
                 return (
                   <circle
@@ -137,14 +157,14 @@ export default function PremiumPage() {
                 );
               })}
               {/* Week labels */}
-              {doomIndexWeeks.map((label, i) => (
+              {chartLabels.map((label: string, i: number) => (
                 <text
-                  key={label}
-                  x={80 + i * 80}
+                  key={i}
+                  x={80 + i * (560 / Math.max(chartLabels.length - 1, 1))}
                   y="198"
                   textAnchor="middle"
                   fill="var(--muted)"
-                  fontSize="11"
+                  fontSize="10"
                   fontFamily="monospace"
                 >
                   {label}

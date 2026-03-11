@@ -33,6 +33,17 @@ export async function POST(req: NextRequest) {
           },
           { onConflict: 'email' }
         );
+
+        // Link auth user if they already have an account
+        const { data: authUsers } = await getSupabaseAdmin().auth.admin.listUsers();
+        const authUser = authUsers?.users?.find(u => u.email === email);
+        if (authUser) {
+          await getSupabaseAdmin()
+            .from('subscribers')
+            .update({ user_id: authUser.id })
+            .eq('email', email)
+            .is('user_id', null);
+        }
       }
       break;
     }
