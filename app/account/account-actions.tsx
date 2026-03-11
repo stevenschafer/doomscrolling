@@ -65,7 +65,7 @@ export function AccountActions({ isPremium }: { isPremium: boolean }) {
                 </div>
                 <button
                   onClick={() => setCancelConfirm(true)}
-                  className="text-xs font-bold uppercase tracking-widest font-mono px-3 py-1 border border-border rounded text-muted hover:text-fg hover:border-fg transition-colors"
+                  className="text-xs font-bold uppercase tracking-widest font-mono px-3 py-1 border border-red-400 dark:border-red-500 rounded text-red-500 dark:text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-colors"
                 >
                   Cancel
                 </button>
@@ -104,7 +104,7 @@ export function AccountActions({ isPremium }: { isPremium: boolean }) {
               </div>
               <button
                 onClick={() => setDeleteConfirm(true)}
-                className="text-xs font-bold uppercase tracking-widest font-mono px-3 py-1 border border-border rounded text-muted hover:text-red-500 hover:border-red-500 transition-colors"
+                className="text-xs font-bold uppercase tracking-widest font-mono px-3 py-1 border border-red-400 dark:border-red-500 rounded text-red-500 dark:text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-colors"
               >
                 Delete
               </button>
