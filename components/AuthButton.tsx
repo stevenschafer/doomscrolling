@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { getPremiumStatus } from '@/lib/premium';
 
-const btnPrimary = "text-xs font-bold tracking-[1.2px] uppercase font-mono px-3 py-1 border rounded border-fg text-fg hover:bg-fg hover:text-[var(--bg)] transition-colors no-underline hover:no-underline";
-const btnSecondary = "text-xs font-bold tracking-[1.2px] uppercase font-mono px-3 py-1 border rounded border-border text-muted hover:bg-fg hover:text-[var(--bg)] hover:border-fg transition-colors no-underline hover:no-underline";
+const btnPrimary = "btn-invert text-xs font-bold tracking-[1.2px] uppercase font-mono px-3 py-1 border rounded border-fg text-fg transition-colors no-underline hover:no-underline";
+const btnSecondary = "btn-invert text-xs font-bold tracking-[1.2px] uppercase font-mono px-3 py-1 border rounded border-border text-muted transition-colors no-underline hover:no-underline";
 
 export async function AuthButton() {
   const { isLoggedIn, isPremium } = await getPremiumStatus();

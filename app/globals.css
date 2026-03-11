@@ -41,3 +41,9 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+.btn-invert:hover {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
