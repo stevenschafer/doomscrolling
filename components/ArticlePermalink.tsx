@@ -35,25 +35,34 @@ export function ArticlePermalink({ article }: { article: Article }) {
         <article className="bg-card-bg rounded-[20px] p-6 flex flex-col gap-5">
           {/* Category + Score */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-bold tracking-[1.2px] uppercase text-muted font-mono">
-                {article.category}
+            <span className="text-xs font-bold tracking-[1.2px] uppercase text-muted font-mono">
+              {article.category}
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted font-mono border border-border rounded px-2 py-1 flex items-center gap-1">
+                <span>💀</span>
+                <span>{article.click_count}</span>
               </span>
-              <span className="text-xs font-bold tracking-[1.2px] uppercase text-muted font-mono">
-                {article.severity}
+              <span
+                className="text-xs font-mono font-bold text-white rounded px-2 py-1"
+                style={{ backgroundColor: bgColor }}
+              >
+                {article.concern_score}
               </span>
             </div>
-            <span
-              className="text-sm font-mono font-bold text-white rounded px-3 py-1"
-              style={{ backgroundColor: bgColor }}
-            >
-              {article.concern_score}
-            </span>
           </div>
 
           {/* Title */}
           <h1 className="text-2xl sm:text-3xl font-bold leading-tight">
-            {article.title}
+            <a
+              href={article.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+              onClick={() => trackOutboundClick(article.id)}
+            >
+              {article.title}
+            </a>
           </h1>
 
           {/* Source + Date */}
@@ -74,15 +83,9 @@ export function ArticlePermalink({ article }: { article: Article }) {
             />
           )}
 
-          {/* AI Summary */}
-          <div className="border-l-2 border-border pl-4">
-            <p className="text-xs font-bold tracking-[1.2px] uppercase text-muted font-mono mb-2">
-              AI Summary
-            </p>
-            <p className="text-base leading-relaxed">
-              {article.ai_summary}
-            </p>
-          </div>
+          <p className="text-sm text-muted leading-relaxed">
+            {article.ai_summary}
+          </p>
 
           {/* Tags */}
           {article.tags?.length > 0 && (
@@ -90,7 +93,7 @@ export function ArticlePermalink({ article }: { article: Article }) {
               {article.tags.map(tag => (
                 <span
                   key={tag}
-                  className="text-xs font-mono text-muted border border-border rounded-full px-3 py-1"
+                  className="text-xs font-mono text-muted border border-border rounded px-2 py-1"
                 >
                   {tag}
                 </span>
