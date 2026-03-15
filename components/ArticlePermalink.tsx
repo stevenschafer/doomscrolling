@@ -26,9 +26,14 @@ export function ArticlePermalink({ article }: { article: Article }) {
         <Link href="/" className="text-lg font-bold tracking-tight hover:no-underline">
           💀 doomscrolling.ai
         </Link>
-        <Link href="/" className="text-sm text-muted hover:text-fg">
-          All stories
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link href="/" className="btn-invert text-xs font-bold tracking-[1.2px] uppercase font-mono px-3 py-1 border rounded border-border text-muted transition-colors no-underline hover:no-underline">
+            All stories
+          </Link>
+          <Link href="/premium" className="btn-invert text-xs font-bold tracking-[1.2px] uppercase font-mono px-3 py-1 border rounded border-fg text-fg transition-colors no-underline hover:no-underline">
+            Premium
+          </Link>
+        </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 pb-16">
