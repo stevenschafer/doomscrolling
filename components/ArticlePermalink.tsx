@@ -24,7 +24,7 @@ export function ArticlePermalink({ article }: { article: Article }) {
     <div className="min-h-screen bg-bg text-fg">
       <header className="max-w-2xl mx-auto px-4 py-6 flex items-center justify-between">
         <Link href="/" className="text-lg font-bold tracking-tight hover:no-underline">
-          doomscrolling.ai
+          💀 doomscrolling.ai
         </Link>
         <Link href="/" className="text-sm text-muted hover:text-fg">
           All stories
