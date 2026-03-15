@@ -1,0 +1,36 @@
+import { getSupabaseAdmin } from '../lib/db';
+import { generateSlug, generateSlugWithFallback } from '../lib/slugify';
+
+async function backfill() {
+  const supabase = getSupabaseAdmin();
+  const { data: articles } = await supabase
+    .from('articles')
+    .select('id, title, published_at, url')
+    .is('slug', null);
+
+  if (!articles?.length) {
+    console.log('No articles need slug backfill.');
+    return;
+  }
+
+  const seen = new Set<string>();
+
+  for (const article of articles) {
+    let slug = generateSlug(article.title, article.published_at);
+    if (seen.has(slug)) {
+      slug = generateSlugWithFallback(article.title, article.published_at, article.url);
+    }
+    seen.add(slug);
+
+    const { error } = await supabase.from('articles').update({ slug }).eq('id', article.id);
+    if (error) {
+      console.error(`Error updating ${article.id}:`, error.message);
+    } else {
+      console.log(`  ${slug}`);
+    }
+  }
+
+  console.log(`Backfilled ${articles.length} articles.`);
+}
+
+backfill();

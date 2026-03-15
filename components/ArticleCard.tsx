@@ -3,6 +3,7 @@
 import { formatDistanceToNow } from 'date-fns';
 import { Article } from '@/lib/db';
 import { useState } from 'react';
+import { ShareButton } from './ShareButton';
 
 function trackClick(id: string) {
   if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
@@ -78,6 +79,9 @@ export function ArticleCard({ article }: { article: Article }) {
           <span>{article.source_name}</span>
           <span>·</span>
           <span>{formatDistanceToNow(new Date(article.published_at), { addSuffix: true })}</span>
+          {article.slug && (
+            <ShareButton slug={article.slug} title={article.title} />
+          )}
         </footer>
       </div>
     </article>
