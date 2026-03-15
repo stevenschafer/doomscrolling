@@ -1,12 +1,31 @@
 import { getSupabaseAdmin } from '@/lib/db';
 import { createClient } from '@/lib/supabase/server';
+import { NextRequest } from 'next/server';
 
-export async function GET() {
-  const { data, error } = await getSupabaseAdmin()
+export async function GET(request: NextRequest) {
+  const params = request.nextUrl.searchParams;
+  const fromParam = params.get('from');
+  const toParam = params.get('to');
+  const weeksParam = params.get('weeks');
+
+  let query = getSupabaseAdmin()
     .from('doom_index')
     .select('*')
-    .order('week_start', { ascending: true })
-    .limit(8);
+    .order('week_start', { ascending: true });
+
+  if (fromParam && toParam) {
+    const from = new Date(fromParam);
+    const to = new Date(toParam);
+    if (isNaN(from.getTime()) || isNaN(to.getTime()) || from >= to) {
+      return Response.json({ error: 'Invalid date range' }, { status: 400 });
+    }
+    query = query.gte('week_start', fromParam).lte('week_start', toParam);
+  } else {
+    const weeks = Math.min(104, Math.max(4, weeksParam ? parseInt(weeksParam, 10) || 8 : 8));
+    query = query.limit(weeks);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     return Response.json({ error: 'Failed to fetch' }, { status: 500 });

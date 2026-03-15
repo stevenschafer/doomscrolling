@@ -3,7 +3,7 @@ import { getPremiumStatus } from '@/lib/premium';
 import { getSupabaseAdmin } from '@/lib/db';
 import { getStripe } from '@/lib/stripe';
 import { AuthButton } from '@/components/AuthButton';
-import { DoomIndexChart } from '@/components/DoomIndexChart';
+import { InteractiveDoomIndex } from '@/components/InteractiveDoomIndex';
 import { PodcastPlayer } from '@/components/PodcastPlayer';
 import { EmailPreferences } from '@/components/EmailPreferences';
 import { AccountActions } from './account-actions';
@@ -24,13 +24,6 @@ export default async function AccountPage() {
     .select('*')
     .eq('user_id', status.userId)
     .single();
-
-  // Fetch doom index (last 8 weeks)
-  const { data: doomData } = await admin
-    .from('doom_index')
-    .select('*')
-    .order('week_start', { ascending: true })
-    .limit(8);
 
   // Fetch latest podcast episode and generate signed URL
   const { data: podcastRaw } = await admin
@@ -124,7 +117,7 @@ export default async function AccountPage() {
             {/* Doom Index */}
             <section className="mb-8">
               <h3 className="text-xs font-bold uppercase tracking-widest font-mono text-muted mb-3">Doom Index</h3>
-              <DoomIndexChart data={doomData ?? []} showCategories={true} />
+              <InteractiveDoomIndex />
             </section>
 
             {/* Podcast */}
