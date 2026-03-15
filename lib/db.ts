@@ -28,6 +28,8 @@ export interface Article {
   tags: string[];
   click_count: number;
   is_featured: boolean;
+  slug: string | null;
+  permalink_view_count: number;
 }
 
 export interface FilteredArticle {
@@ -84,8 +86,25 @@ export const db = {
     severity: string;
     ai_summary: string;
     tags: string[];
+    slug?: string;
   }) {
     const { error } = await getSupabaseAdmin().from('articles').insert(article);
+
+    if (error?.code === '23505' && error.message.includes('slug') && article.slug) {
+      // Slug collision — retry with hash fallback
+      const { generateSlugWithFallback } = await import('./slugify');
+      const fallbackSlug = generateSlugWithFallback(
+        article.title,
+        article.published_at,
+        article.url
+      );
+      const { error: retryError } = await getSupabaseAdmin()
+        .from('articles')
+        .insert({ ...article, slug: fallbackSlug });
+      if (retryError) throw retryError;
+      return;
+    }
+
     if (error) throw error;
   },
 
@@ -192,6 +211,35 @@ export const db = {
         await getSupabaseAdmin()
           .from('articles')
           .update({ click_count: (data.click_count || 0) + 1 })
+          .eq('id', id);
+      }
+    }
+  },
+
+  async getArticleBySlug(slug: string): Promise<Article | null> {
+    const { data, error } = await getSupabaseAdmin()
+      .from('articles')
+      .select('*')
+      .eq('slug', slug)
+      .single();
+
+    if (error || !data) return null;
+    return data as Article;
+  },
+
+  async incrementPermalinkViews(id: string) {
+    const { error } = await getSupabaseAdmin().rpc('increment_permalink_views', { article_id: id });
+    if (error) {
+      // Fallback if RPC doesn't exist
+      const { data } = await getSupabaseAdmin()
+        .from('articles')
+        .select('permalink_view_count')
+        .eq('id', id)
+        .single();
+      if (data) {
+        await getSupabaseAdmin()
+          .from('articles')
+          .update({ permalink_view_count: (data.permalink_view_count || 0) + 1 })
           .eq('id', id);
       }
     }

@@ -1,5 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { RawStory, db } from './db';
+import { generateSlug } from './slugify';
 
 let _anthropic: Anthropic | null = null;
 function getAnthropic(): Anthropic {
@@ -85,6 +86,8 @@ export async function scoreStory(story: RawStory): Promise<ScoredStory> {
     return { ...story, filtered: true };
   }
 
+  const slug = generateSlug(story.title, story.published_at);
+
   await db.insertArticle({
     source_id: story.source_id,
     title: story.title,
@@ -97,6 +100,7 @@ export async function scoreStory(story: RawStory): Promise<ScoredStory> {
     severity: result.severity,
     ai_summary: result.ai_summary,
     tags: result.tags,
+    slug,
   });
 
   return { ...story, filtered: false, ...result };
